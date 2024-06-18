@@ -15,10 +15,10 @@ enum SortingType {
 class AllTasksViewController: UIViewController {
     //MARK: - Public Properties
     var tasks: [TaskModel] = []
-    
     let newTask = CreateTaskViewController()
     
     //MARK: - Private Properties
+    private let shared = TaskManager.shared
     private var currentSortingType: SortingType = .byCompletion
     
     private let taskCellReuseIdentifire = TaskTableViewCell.reuseIdentifire
@@ -27,7 +27,7 @@ class AllTasksViewController: UIViewController {
         let table = UITableView()
         table.register(TaskTableViewCell.self, 
                        forCellReuseIdentifier: taskCellReuseIdentifire)
-        table.backgroundColor = .clear
+        table.backgroundColor = .white
         table.layer.cornerRadius = 16
         table.delegate = self
         table.dataSource = self
@@ -84,17 +84,15 @@ class AllTasksViewController: UIViewController {
         }
         allTasksTableView.reloadData()
     }
-
     
     private func loadAndUpdateView() {
-        if let loadedTasks = UserDefaults.standard.getTasks(forKey: "Tasks") {
-            tasks = loadedTasks
-            allTasksTableView.reloadData()
-        }
+        let loadedTasks = shared.loadTasks()
+        tasks = loadedTasks
+        allTasksTableView.reloadData()
     }
     
     private func setAndUpdateView(tasks: [TaskModel]) {
-        UserDefaults.standard.setTasks(tasks, forKey: "Tasks")
+        shared.saveTasks(tasks)
         loadAndUpdateView()
     }
     
@@ -131,6 +129,7 @@ extension AllTasksViewController: UITableViewDataSource {
         let task = tasks[indexPath.row]
         cell.configure(with: task, delegate: self)
         cell.taskIsDone = tasks[indexPath.row].completed
+        cell.backgroundColor = .white
         cell.selectionStyle = .none
         return cell
     }
@@ -146,7 +145,7 @@ extension AllTasksViewController: UITableViewDelegate {
         if editingStyle == .delete {
             tasks.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            UserDefaults.standard.setTasks(tasks, forKey: "Tasks")
+            shared.saveTasks(tasks)
             loadAndUpdateView()
         }
     }

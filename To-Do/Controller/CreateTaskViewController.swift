@@ -18,6 +18,7 @@ class CreateTaskViewController: UIViewController {
     var task: TaskModel?
     
     //MARK: - Private Properties
+    private let shared = TaskManager.shared
     private var selectedImage: UIImage?
     
     private lazy var taskName: UITextField = {
@@ -25,7 +26,7 @@ class CreateTaskViewController: UIViewController {
         let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.systemGray]
         taskName.attributedPlaceholder = NSAttributedString(string: "Название", attributes: attributes)
         taskName.textColor = .black
-    
+        
         taskName.layer.borderWidth = 1.0
         taskName.layer.borderColor = UIColor.systemGray.cgColor
         taskName.layer.cornerRadius = 5.0
@@ -226,7 +227,7 @@ extension CreateTaskViewController: UITextFieldDelegate {
         return true
     }
     
-    func textField(_ textField: UITextField, 
+    func textField(_ textField: UITextField,
                    shouldChangeCharactersIn range: NSRange,
                    replacementString string: String) -> Bool {
         if let currentText = textField.text, let textRange = Range(range, in: currentText) {

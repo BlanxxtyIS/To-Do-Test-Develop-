@@ -29,21 +29,3 @@ struct TaskModel: Codable {
     }
 }
 
-extension UserDefaults {
-    func setTasks(_ tasks: [TaskModel], forKey key: String) {
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(tasks) {
-            self.set(encoded, forKey: key)
-        }
-    }
-    
-    func getTasks(forKey key: String) -> [TaskModel]? {
-        if let savedTasks = self.data(forKey: key) {
-            let decoder = JSONDecoder()
-            if let loadedTasks = try? decoder.decode([TaskModel].self, from: savedTasks) {
-                return loadedTasks
-            }
-        }
-        return nil
-    }
-}
