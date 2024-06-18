@@ -43,9 +43,9 @@ class CreateTaskViewController: UIViewController {
         return picker
     }()
     
-    private lazy var decription: UITextView = {
+    private lazy var descriptionText: UITextView = {
         let description = UITextView()
-        description.text = "ВЫВЫВОФОВОФОВОФОВООВ"
+        description.text = "Описание"
         description.textColor = .black
         description.isEditable = true
         description.center = self.view.center
@@ -55,19 +55,32 @@ class CreateTaskViewController: UIViewController {
         return description
     }()
     
+    private lazy var createTaskButton: UIButton = {
+       let button = UIButton()
+        button.backgroundColor = .blue
+        button.addTarget(self, action: #selector(createTaskButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Hello")
         title = "Создать задачу"
         view.backgroundColor = .white
         setupUI()
         loadTaskData()
     }
     
+    @objc
+    private func createTaskButtonTapped() {
+        print("Создааать")
+    }
+    
     private func setupUI() {
         view.addSubview(taskName)
         view.addSubview(datePicker)
-        view.addSubview(decription)
+        view.addSubview(descriptionText)
+        view.addSubview(createTaskButton)
         setupConstaints()
     }
     
@@ -81,11 +94,16 @@ class CreateTaskViewController: UIViewController {
             datePicker.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             
         
-            decription.topAnchor.constraint(equalTo: datePicker
+            descriptionText.topAnchor.constraint(equalTo: datePicker
                 .bottomAnchor, constant: 10),
-            decription.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            decription.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            decription.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)])
+            descriptionText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            descriptionText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            descriptionText.bottomAnchor.constraint(equalTo: createTaskButton.topAnchor, constant: 10),
+            
+            createTaskButton.heightAnchor.constraint(equalToConstant: 55),
+            createTaskButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            createTaskButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            createTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 10)])
     }
     
     @objc
@@ -97,7 +115,7 @@ class CreateTaskViewController: UIViewController {
         guard let task = task else { return }
         taskName.text = task.name
         datePicker.date = task.time
-        decription.text = task.description
+        descriptionText.text = task.description
     }
 }
 

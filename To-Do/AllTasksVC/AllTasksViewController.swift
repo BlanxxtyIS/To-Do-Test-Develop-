@@ -87,15 +87,15 @@ extension AllTasksViewController: UITableViewDelegate {
         return .delete
     }
     
-    //удаление ячейки
+    // Удаление ячейки
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        tableView.beginUpdates()
-        
-        tasks.remove(at: indexPath.row)
-        tableView.deleteRows(at: [indexPath], with: .fade)
-        
-        tableView.endUpdates()
-        tableView.reloadData()
+        if editingStyle == .delete {
+            // Удаляем задачу из исходных данных
+            tasks[indexPath.section].remove(at: indexPath.row)
+            
+            // Удаляем строку из таблицы
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
