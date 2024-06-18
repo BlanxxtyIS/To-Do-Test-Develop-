@@ -12,26 +12,22 @@ struct TaskModel: Codable {
     let name: String
     let time: Date
     let description: String
+    var completed: Bool
 }
 
 extension UserDefaults {
-    // Ключ для хранения задач в UserDefaults
-    private static let tasksKey = "tasksKey"
-    
-    // Метод для сохранения задач в UserDefaults
-    func setTasks(_ tasks: [TaskModel]) {
+    func setTasks(_ tasks: [TaskModel], forKey key: String) {
         let encoder = JSONEncoder()
         if let encoded = try? encoder.encode(tasks) {
-            set(encoded, forKey: UserDefaults.tasksKey)
+            self.set(encoded, forKey: key)
         }
     }
     
-    // Метод для извлечения задач из UserDefaults
-    func getTasks() -> [TaskModel]? {
-        if let savedTasksData = data(forKey: UserDefaults.tasksKey) {
+    func getTasks(forKey key: String) -> [TaskModel]? {
+        if let savedTasks = self.data(forKey: key) {
             let decoder = JSONDecoder()
-            if let tasks = try? decoder.decode([TaskModel].self, from: savedTasksData) {
-                return tasks
+            if let loadedTasks = try? decoder.decode([TaskModel].self, from: savedTasks) {
+                return loadedTasks
             }
         }
         return nil

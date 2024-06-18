@@ -8,24 +8,18 @@
 import UIKit
 
 class AllTasksViewController: UIViewController {
-    
-    var tasks: [[TaskModel]] = [
-        [TaskModel(id: UUID().uuidString, name: "Сдать тех-задание", time: Date(), description: "Создать мини To-Do приложение"), TaskModel(id: UUID().uuidString, name: "Перепрочитать про GCD", time: Date(), description: "Подкрепить знания про многопоточность")],
-        [TaskModel(id: UUID().uuidString, name: "Доделать конспекты в PDF", time: Date(), description: "Закриншотить все учебные материалы"), TaskModel(id: UUID().uuidString, name: "SwiftUI", time: Date(), description: "Просмотреть и изучить курс Angella")],
-        [TaskModel(id: UUID().uuidString, name: "Приложение склада", time: Date(), description: "Додлеать приложение оптимизации склада, почистить код и привести логику в порядок ")]
-    ]
+    //MARK: - Public Properties
+    var tasks: [TaskModel] = []
     
     let newTask = CreateTaskViewController()
-
     
-    private let tasksHeaders = ["Просроченные", "Сегодня",
-                                "Завтра","На неделе", "Позже"]
-    
+    //MARK: - Private Properties
     private let taskCellReuseIdentifire = TaskTableViewCell.reuseIdentifire
     
     private lazy var allTasksTableView: UITableView = {
         let table = UITableView()
-        table.register(TaskTableViewCell.self, forCellReuseIdentifier: taskCellReuseIdentifire)
+        table.register(TaskTableViewCell.self, 
+                       forCellReuseIdentifier: taskCellReuseIdentifire)
         table.backgroundColor = .clear
         table.layer.cornerRadius = 16
         table.delegate = self
@@ -35,23 +29,46 @@ class AllTasksViewController: UIViewController {
         return table
     }()
     
+    //MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Задачи"
         view.backgroundColor = .white
+        loadAndUpdateView()
         setupUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("Приветики")
+        loadAndUpdateView()
     }
 
+    //MARK: - Private Methods
+    @objc
+    private func rightButtonAction() {
+        print("Сортировка")
+    }
+    
+    private func loadAndUpdateView() {
+        if let loadedTasks = UserDefaults.standard.getTasks(forKey: "Tasks") {
+            tasks = loadedTasks
+            allTasksTableView.reloadData()
+        }
+    }
+    
+    private func setAndUpdateView(tasks: [TaskModel]) {
+        UserDefaults.standard.setTasks(tasks, forKey: "Tasks")
+        loadAndUpdateView()
+    }
     
     private func setupUI() {
         view.addSubview(allTasksTableView)
         setupConstraints()
-        let rightButtonItem = UIBarButtonItem(title: "Сортировать", image: UIImage(systemName: "line.horizontal.3.decrease"), target: self, action: #selector(rightButtonAction), menu: .none)
+        let rightButtonItem = UIBarButtonItem(title: "Сортировать", 
+                                              image: UIImage(systemName: "line.horizontal.3.decrease"),
+                                              target: self,
+                                              action: #selector(rightButtonAction),
+                                              menu: .none)
         navigationItem.rightBarButtonItem = rightButtonItem
     }
     
@@ -60,33 +77,25 @@ class AllTasksViewController: UIViewController {
             allTasksTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             allTasksTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             allTasksTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            allTasksTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)])
-    }
-    @objc
-    private func rightButtonAction() {
-        print("Сортировка")
+            allTasksTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, 
+                                                      constant: -20)])
     }
 }
 
+//MARK: - UITableView
 extension AllTasksViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return tasks.count
-    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let taskSection = tasks[section]
-        return taskSection.count
+        return tasks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: taskCellReuseIdentifire, for: indexPath) as! TaskTableViewCell
-        cell.taskNameLabel.text = tasks[indexPath.section][indexPath.row].name
+        let task = tasks[indexPath.row]
+        cell.configure(with: task, delegate: self)
+        cell.taskIsDone = tasks[indexPath.row].completed
         cell.selectionStyle = .none
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return tasksHeaders[section]
     }
 }
 
@@ -98,17 +107,17 @@ extension AllTasksViewController: UITableViewDelegate {
     // Удаление ячейки
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // Удаляем задачу из исходных данных
-            tasks[indexPath.section].remove(at: indexPath.row)
-            
-            // Удаляем строку из таблицы
+            tasks.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            UserDefaults.standard.setTasks(tasks, forKey: "Tasks")
+            loadAndUpdateView()
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let task = tasks[indexPath.section][indexPath.row]
+        let task = tasks[indexPath.row]
         let vc = CreateTaskViewController()
+        vc.delegate = self
         vc.task = task
         present(vc, animated: true)
     }
@@ -118,3 +127,26 @@ extension AllTasksViewController: UITableViewDelegate {
     }
 }
 
+//MARK: - CreateTaskViewControllerDelegate
+extension AllTasksViewController: CreateTaskViewControllerDelegate {
+    func didCreateTask(_ task: TaskModel) {
+        var allTasks = tasks
+        
+        if let index = allTasks.firstIndex(where: { $0.id == task.id }) {
+            allTasks[index] = task 
+        } else {
+            allTasks.append(task)
+        }
+        setAndUpdateView(tasks: allTasks)
+    }
+}
+
+//MARK: - TaskTableViewCellDelegate
+extension AllTasksViewController: TaskTableViewCellDelegate {
+    func didUpdateTaskCompletion(task: TaskModel) {
+        if let rowIndex = tasks.firstIndex(where: { $0.id == task.id }) {
+            tasks[rowIndex] = task
+            setAndUpdateView(tasks: tasks)
+        }
+    }
+}

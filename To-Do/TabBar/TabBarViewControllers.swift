@@ -11,21 +11,31 @@ class TabBarViewControllers: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewControllers = createViewController()
+        setupViewControllers()
     }
     
-    private func createViewController() -> [UIViewController] {
-        let allTasksViewController = createNewViewController(for: AllTasksViewController(), title: "Tasks", imageName: "border")
-        let createTaskViewController = createNewViewController(for: CreateTaskViewController(), title: "Create task", imageName: "crop")
-        return [allTasksViewController, createTaskViewController]
+    private func setupViewControllers() {
+        let allTasksViewController = AllTasksViewController()
+        let createTaskViewController = CreateTaskViewController()
+        
+        createTaskViewController.delegate = allTasksViewController
+        
+        let allTasksNavController = createNewViewController(for: allTasksViewController, 
+                                                            title: "Tasks",
+                                                            imageName: "border")
+        let createTaskNavController = createNewViewController(for: createTaskViewController, 
+                                                              title: "Create task",
+                                                              imageName: "crop")
+        
+        viewControllers = [allTasksNavController, createTaskNavController]
     }
     
     private func createNewViewController(for rootViewController: UIViewController,
                                          title: String,
                                          imageName: String) -> UIViewController {
         let navController = UINavigationController(rootViewController: rootViewController)
-        let tabBarItem = UITabBarItem(title: title, image: UIImage(named: imageName), tag: 0)
-        navController.tabBarItem = tabBarItem
+        navController.tabBarItem.title = title
+        navController.tabBarItem.image = UIImage(named: imageName)
         return navController
     }
 }

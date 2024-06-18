@@ -21,6 +21,7 @@
 		F437D2042C209A30005B32DA /* CreateTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D2032C209A30005B32DA /* CreateTaskViewController.swift */; };
 		F437D2082C209C70005B32DA /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D2072C209C70005B32DA /* TaskTableViewCell.swift */; };
 		F437D20A2C2151F8005B32DA /* TaskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D2092C2151F8005B32DA /* TaskModel.swift */; };
+		F4FB40C02C218FE400055A9A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4FB40BF2C218FE400055A9A /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		F437D2032C209A30005B32DA /* CreateTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskViewController.swift; sourceTree = "<group>"; };
 		F437D2072C209C70005B32DA /* TaskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
 		F437D2092C2151F8005B32DA /* TaskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModel.swift; sourceTree = "<group>"; };
+		F4FB40BF2C218FE400055A9A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 				F437D1E72C209425005B32DA /* ViewController.swift */,
 				F437D1EC2C209427005B32DA /* Assets.xcassets */,
 				F437D1EE2C209427005B32DA /* LaunchScreen.storyboard */,
+				F4FB40BF2C218FE400055A9A /* GoogleService-Info.plist */,
 				F437D1F12C209427005B32DA /* Info.plist */,
 			);
 			path = "To-Do";
@@ -205,6 +208,7 @@
 			files = (
 				F437D1F02C209427005B32DA /* LaunchScreen.storyboard in Resources */,
 				F437D1ED2C209427005B32DA /* Assets.xcassets in Resources */,
+				F4FB40C02C218FE400055A9A /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

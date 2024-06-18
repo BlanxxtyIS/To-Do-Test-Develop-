@@ -7,16 +7,29 @@
 
 import UIKit
 
+protocol TaskTableViewCellDelegate: AnyObject {
+    func didUpdateTaskCompletion(task: TaskModel)
+}
+
 class TaskTableViewCell: UITableViewCell {
-    
+    //MARK: - Public Properties
     static let reuseIdentifire = "TaskCell"
-    private var taskIsDone: Bool = false
+    weak var delegate: TaskTableViewCellDelegate?
     
-    lazy var taskNameLabel: UILabel = {
+    var task: TaskModel?
+    
+    var taskIsDone: Bool = false {
+        didSet {
+            let imageName = taskIsDone ? "checkmark.seal.fill" : "seal"
+            doneButton.setImage(UIImage(systemName: imageName), for: .normal)
+        }
+    }
+    
+    //MARK: - Private Properties
+    private lazy var taskNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .medium)
         label.textColor = .red
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -24,10 +37,6 @@ class TaskTableViewCell: UITableViewCell {
        let picker = UIDatePicker()
         picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .automatic
-        picker.locale = .current
-        picker.date = .now
-        //picker.addTarget(self, action: #selector(pickerDateChanged), for: .valueChanged)
-        picker.translatesAutoresizingMaskIntoConstraints = false
         return picker
     }()
     
@@ -36,11 +45,10 @@ class TaskTableViewCell: UITableViewCell {
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         button.setImage(UIImage(systemName: "seal"), for: .normal)
         button.setTitleColor(.systemGreen, for: .normal)
-
-        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
+    //MARK: - Initializers
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -50,21 +58,31 @@ class TaskTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - Public Methods
+    func configure(with task: TaskModel, delegate: TaskTableViewCellDelegate) {
+        self.task = task
+        self.delegate = delegate
+        taskIsDone = task.completed
+        taskNameLabel.text = task.name
+        datePicker.date = task.time
+    }
+    
+    //MARK: - Private Methods
     @objc
     private func doneButtonTapped() {
-        if taskIsDone {
-            doneButton.setImage(UIImage(systemName: "seal"), for: .normal)
-            taskIsDone = false
-        } else {
-            doneButton.setImage(UIImage(systemName: "checkmark.seal.fill"), for: .normal)
-            taskIsDone = true
+        taskIsDone.toggle()
+        task?.completed = taskIsDone
+        if let updatedTask = task {
+            delegate?.didUpdateTaskCompletion(task: updatedTask)
         }
     }
     
     private func setupUI() {
-        contentView.addSubview(taskNameLabel)
-        contentView.addSubview(doneButton)
-        contentView.addSubview(datePicker)
+        let uiViews: [UIView] = [taskNameLabel, doneButton, datePicker]
+        uiViews.forEach { uiView in
+            uiView.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(uiView)
+        }
         setupConstraints()
     }
     
