@@ -13,9 +13,6 @@
 		F437D1E82C209425005B32DA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D1E72C209425005B32DA /* ViewController.swift */; };
 		F437D1ED2C209427005B32DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F437D1EC2C209427005B32DA /* Assets.xcassets */; };
 		F437D1F02C209427005B32DA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F437D1EE2C209427005B32DA /* LaunchScreen.storyboard */; };
-		F437D1F92C2097CA005B32DA /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D1F82C2097CA005B32DA /* WelcomeViewController.swift */; };
-		F437D1FB2C2097D8005B32DA /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D1FA2C2097D8005B32DA /* RegisterViewController.swift */; };
-		F437D1FD2C2097E1005B32DA /* EnterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D1FC2C2097E1005B32DA /* EnterViewController.swift */; };
 		F437D2002C209914005B32DA /* TabBarViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D1FF2C209914005B32DA /* TabBarViewControllers.swift */; };
 		F437D2022C209A0E005B32DA /* AllTasksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D2012C209A0E005B32DA /* AllTasksViewController.swift */; };
 		F437D2042C209A30005B32DA /* CreateTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F437D2032C209A30005B32DA /* CreateTaskViewController.swift */; };
@@ -35,9 +32,6 @@
 		F437D1EC2C209427005B32DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F437D1EF2C209427005B32DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F437D1F12C209427005B32DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F437D1F82C2097CA005B32DA /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
-		F437D1FA2C2097D8005B32DA /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
-		F437D1FC2C2097E1005B32DA /* EnterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterViewController.swift; sourceTree = "<group>"; };
 		F437D1FF2C209914005B32DA /* TabBarViewControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewControllers.swift; sourceTree = "<group>"; };
 		F437D2012C209A0E005B32DA /* AllTasksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllTasksViewController.swift; sourceTree = "<group>"; };
 		F437D2032C209A30005B32DA /* CreateTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTaskViewController.swift; sourceTree = "<group>"; };
@@ -96,7 +90,6 @@
 		F437D1E22C209425005B32DA /* To-Do */ = {
 			isa = PBXGroup;
 			children = (
-				F437D1F72C2097B9005B32DA /* Authenitcate */,
 				F437D1FE2C2098F7005B32DA /* TabBar */,
 				F437D2052C209B1A005B32DA /* AllTasksVC */,
 				F437D2062C209B2F005B32DA /* CreateTaskVC */,
@@ -109,16 +102,6 @@
 				F437D1F12C209427005B32DA /* Info.plist */,
 			);
 			path = "To-Do";
-			sourceTree = "<group>";
-		};
-		F437D1F72C2097B9005B32DA /* Authenitcate */ = {
-			isa = PBXGroup;
-			children = (
-				F437D1F82C2097CA005B32DA /* WelcomeViewController.swift */,
-				F437D1FA2C2097D8005B32DA /* RegisterViewController.swift */,
-				F437D1FC2C2097E1005B32DA /* EnterViewController.swift */,
-			);
-			path = Authenitcate;
 			sourceTree = "<group>";
 		};
 		F437D1FE2C2098F7005B32DA /* TabBar */ = {
@@ -247,14 +230,11 @@
 				F437D2002C209914005B32DA /* TabBarViewControllers.swift in Sources */,
 				F437D1E82C209425005B32DA /* ViewController.swift in Sources */,
 				F437D2082C209C70005B32DA /* TaskTableViewCell.swift in Sources */,
-				F437D1FB2C2097D8005B32DA /* RegisterViewController.swift in Sources */,
 				F437D20A2C2151F8005B32DA /* TaskModel.swift in Sources */,
-				F437D1F92C2097CA005B32DA /* WelcomeViewController.swift in Sources */,
 				F437D1E42C209425005B32DA /* AppDelegate.swift in Sources */,
 				F437D2022C209A0E005B32DA /* AllTasksViewController.swift in Sources */,
 				F437D2042C209A30005B32DA /* CreateTaskViewController.swift in Sources */,
 				F437D1E62C209425005B32DA /* SceneDelegate.swift in Sources */,
-				F437D1FD2C2097E1005B32DA /* EnterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

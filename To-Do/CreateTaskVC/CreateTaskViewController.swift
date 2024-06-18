@@ -18,6 +18,8 @@ class CreateTaskViewController: UIViewController {
     var task: TaskModel?
     
     //MARK: - Private Properties
+    private var selectedImage: UIImage?
+    
     private lazy var taskName: UITextField = {
         let taskName = UITextField()
         let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.systemGray]
@@ -104,7 +106,10 @@ class CreateTaskViewController: UIViewController {
         taskName.text = task?.name
         datePicker.date = task?.time ?? Date()
         descriptionText.text = task?.description
-        title = task != nil ? "Редактировать задачу" : "Создать задачу"
+        if let image = task?.imageData {
+            productImageView.image = UIImage(data: image)
+        }
+        title = "Создать задачу"
         view.backgroundColor = .white
         setupUI()
     }
@@ -116,10 +121,21 @@ class CreateTaskViewController: UIViewController {
     }
     
     //MARK: - Private Methods
+    
+    private func setupUI() {
+        let uiViews: [UIView] = [taskName, dateAndSelectedImageStackView, descriptionText, productImageView, createTaskButton]
+        uiViews.forEach { uiView in
+            uiView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(uiView)
+        }
+        setupConstaints()
+    }
+    
     private func clearInputFields() {
         taskName.text = ""
         datePicker.date = Date()
         descriptionText.text = "Описание"
+        productImageView.image = nil
     }
     
     @objc private func selectImageFromGallery() {
@@ -138,13 +154,15 @@ class CreateTaskViewController: UIViewController {
                              name: taskName.text ?? "",
                              time: datePicker.date,
                              description: descriptionText.text,
-                             completed: existingTask.completed)
+                             completed: existingTask.completed,
+                             image: selectedImage)
         } else {
             task = TaskModel(id: UUID().uuidString, 
                              name: taskName.text ?? "",
                              time: datePicker.date,
                              description: descriptionText.text,
-                             completed: false)
+                             completed: false, 
+                             image: selectedImage)
         }
         delegate?.didCreateTask(task)
         dismiss(animated: true) {
@@ -155,15 +173,6 @@ class CreateTaskViewController: UIViewController {
     @objc
     private func pickerDateChanged() {
         print(datePicker.date)
-    }
-    
-    private func setupUI() {
-        let uiViews: [UIView] = [taskName, dateAndSelectedImageStackView, descriptionText, productImageView, createTaskButton]
-        uiViews.forEach { uiView in
-            uiView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(uiView)
-        }
-        setupConstaints()
     }
     
     private func setupConstaints() {
@@ -242,6 +251,7 @@ extension CreateTaskViewController: UIImagePickerControllerDelegate, UINavigatio
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         if let selectedImage = info[.originalImage] as? UIImage { productImageView.image = selectedImage
+            self.selectedImage = selectedImage
         }
     }
     
