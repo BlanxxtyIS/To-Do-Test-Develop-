@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class CreateTaskViewController: UIViewController {
     
     var task: TaskModel?
@@ -58,6 +59,7 @@ class CreateTaskViewController: UIViewController {
     private lazy var createTaskButton: UIButton = {
        let button = UIButton()
         button.backgroundColor = .blue
+        button.setTitle("Сохранить", for: .normal)
         button.addTarget(self, action: #selector(createTaskButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -65,15 +67,18 @@ class CreateTaskViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        taskName.text = task?.name
+        datePicker.date = task?.time ?? Date()
+        descriptionText.text = task?.description
         title = "Создать задачу"
         view.backgroundColor = .white
         setupUI()
-        loadTaskData()
     }
     
     @objc
-    private func createTaskButtonTapped() {
-        print("Создааать")
+    func createTaskButtonTapped() {
+        let task = TaskModel(id: UUID().uuidString, name: taskName.text ?? "", time: datePicker.date, description: descriptionText.text)
+        dismiss(animated: true)
     }
     
     private func setupUI() {
@@ -111,12 +116,6 @@ class CreateTaskViewController: UIViewController {
         print(datePicker.date)
     }
     
-    private func loadTaskData() {
-        guard let task = task else { return }
-        taskName.text = task.name
-        datePicker.date = task.time
-        descriptionText.text = task.description
-    }
 }
 
 extension CreateTaskViewController: UITextFieldDelegate {
@@ -144,3 +143,4 @@ extension CreateTaskViewController: UITextViewDelegate {
         }
     }
 }
+

@@ -15,6 +15,9 @@ class AllTasksViewController: UIViewController {
         [TaskModel(id: UUID().uuidString, name: "Приложение склада", time: Date(), description: "Додлеать приложение оптимизации склада, почистить код и привести логику в порядок ")]
     ]
     
+    let newTask = CreateTaskViewController()
+
+    
     private let tasksHeaders = ["Просроченные", "Сегодня",
                                 "Завтра","На неделе", "Позже"]
     
@@ -34,11 +37,16 @@ class AllTasksViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Hello")
         title = "Задачи"
         view.backgroundColor = .white
         setupUI()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("Приветики")
+    }
+
     
     private func setupUI() {
         view.addSubview(allTasksTableView)
@@ -109,3 +117,4 @@ extension AllTasksViewController: UITableViewDelegate {
         50
     }
 }
+
