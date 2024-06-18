@@ -33,12 +33,13 @@ class TaskTableViewCell: UITableViewCell {
         return label
     }()
     
-    private lazy var datePicker: UIDatePicker = {
-       let picker = UIDatePicker()
-        picker.datePickerMode = .date
-        picker.preferredDatePickerStyle = .automatic
-        return picker
+    private lazy var dateLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 15, weight: .medium)
+        label.textColor = .red
+        return label
     }()
+    
     
     private lazy var doneButton: UIButton = {
         let button = UIButton()
@@ -64,7 +65,11 @@ class TaskTableViewCell: UITableViewCell {
         self.delegate = delegate
         taskIsDone = task.completed
         taskNameLabel.text = task.name
-        datePicker.date = task.time
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        let formattedDate = dateFormatter.string(from: task.time)
+        dateLabel.text = formattedDate
     }
     
     //MARK: - Private Methods
@@ -78,7 +83,7 @@ class TaskTableViewCell: UITableViewCell {
     }
     
     private func setupUI() {
-        let uiViews: [UIView] = [taskNameLabel, doneButton, datePicker]
+        let uiViews: [UIView] = [taskNameLabel, doneButton, dateLabel]
         uiViews.forEach { uiView in
             uiView.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview(uiView)
@@ -92,8 +97,8 @@ class TaskTableViewCell: UITableViewCell {
             doneButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             doneButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            datePicker.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            datePicker.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            dateLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
             
             taskNameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             taskNameLabel.leadingAnchor.constraint(equalTo: doneButton.trailingAnchor, constant: 5)])

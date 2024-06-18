@@ -40,10 +40,39 @@ class CreateTaskViewController: UIViewController {
     
     private lazy var datePicker: UIDatePicker = {
        let picker = UIDatePicker()
-        picker.datePickerMode = .dateAndTime
+        picker.datePickerMode = .date
         picker.preferredDatePickerStyle = .automatic
         picker.addTarget(self, action: #selector(pickerDateChanged), for: .valueChanged)
         return picker
+    }()
+    
+    private lazy var selectImageButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Выбрать изображение", for: .normal)
+        button.addTarget(self, action: #selector(selectImageFromGallery), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var dateAndSelectedImageStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [datePicker, selectImageButton])
+        stack.axis = .horizontal
+        stack.distribution = .fill
+        stack.alignment = .trailing
+        stack.spacing = 40
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    private lazy var productImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.borderWidth = 1
+        imageView.layer.borderColor = UIColor.systemGray.cgColor
+        imageView.layer.cornerRadius = 5 
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     private lazy var descriptionText: UITextView = {
@@ -51,6 +80,9 @@ class CreateTaskViewController: UIViewController {
         description.text = "Описание"
         description.textColor = .black
         description.isEditable = true
+        description.layer.borderWidth = 1.0
+        description.layer.borderColor = UIColor.systemGray.cgColor
+        description.layer.cornerRadius = 5.0
         description.center = self.view.center
         description.font = .systemFont(ofSize: 20, weight: .medium)
         description.delegate = self
@@ -61,6 +93,7 @@ class CreateTaskViewController: UIViewController {
        let button = UIButton()
         button.backgroundColor = .blue
         button.setTitle("Сохранить", for: .normal)
+        button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(createTaskButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -89,14 +122,22 @@ class CreateTaskViewController: UIViewController {
         descriptionText.text = "Описание"
     }
     
+    @objc private func selectImageFromGallery() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.sourceType = .photoLibrary
+        imagePickerController.allowsEditing = false
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    
     @objc
     func createTaskButtonTapped() {
         let task: TaskModel
         if let existingTask = self.task {
             task = TaskModel(id: existingTask.id, 
                              name: taskName.text ?? "",
-                             time: existingTask.time,
-                             description: descriptionText.text, 
+                             time: datePicker.date,
+                             description: descriptionText.text,
                              completed: existingTask.completed)
         } else {
             task = TaskModel(id: UUID().uuidString, 
@@ -117,7 +158,7 @@ class CreateTaskViewController: UIViewController {
     }
     
     private func setupUI() {
-        let uiViews: [UIView] = [taskName, datePicker, descriptionText, createTaskButton]
+        let uiViews: [UIView] = [taskName, dateAndSelectedImageStackView, descriptionText, productImageView, createTaskButton]
         uiViews.forEach { uiView in
             uiView.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(uiView)
@@ -134,9 +175,9 @@ class CreateTaskViewController: UIViewController {
             taskName.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
                                                constant: -16),
             
-            datePicker.topAnchor.constraint(equalTo: taskName.bottomAnchor, 
+            dateAndSelectedImageStackView.topAnchor.constraint(equalTo: taskName.bottomAnchor,
                                             constant: 10),
-            datePicker.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+            dateAndSelectedImageStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
                                                 constant: 16),
             
         
@@ -147,8 +188,16 @@ class CreateTaskViewController: UIViewController {
                                                      constant: 16),
             descriptionText.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                       constant: -16),
-            descriptionText.bottomAnchor.constraint(equalTo: createTaskButton.topAnchor,
-                                                    constant: 10),
+            descriptionText.bottomAnchor.constraint(equalTo: productImageView.topAnchor,
+                                                    constant: -10),
+            
+            productImageView.heightAnchor.constraint(equalToConstant: 155),
+            productImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                      constant: 16),
+            productImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                       constant: -16),
+            productImageView.bottomAnchor.constraint(equalTo: createTaskButton.topAnchor,
+                                                     constant: -10),
             
             createTaskButton.heightAnchor.constraint(equalToConstant: 55),
             createTaskButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, 
@@ -156,7 +205,7 @@ class CreateTaskViewController: UIViewController {
             createTaskButton.trailingAnchor.constraint(equalTo: view.trailingAnchor,
                                                        constant: -16),
             createTaskButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                                                     constant: 10)])
+                                                     constant: -10)])
     }
 }
 
@@ -188,3 +237,14 @@ extension CreateTaskViewController: UITextViewDelegate {
     }
 }
 
+extension CreateTaskViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        if let selectedImage = info[.originalImage] as? UIImage { productImageView.image = selectedImage
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) { picker.dismiss(animated: true, completion: nil)
+    }
+}

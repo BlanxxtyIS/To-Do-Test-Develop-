@@ -7,6 +7,11 @@
 
 import UIKit
 
+enum SortingType {
+    case byCompletion
+    case byDate
+}
+
 class AllTasksViewController: UIViewController {
     //MARK: - Public Properties
     var tasks: [TaskModel] = []
@@ -14,6 +19,8 @@ class AllTasksViewController: UIViewController {
     let newTask = CreateTaskViewController()
     
     //MARK: - Private Properties
+    private var currentSortingType: SortingType = .byCompletion
+    
     private let taskCellReuseIdentifire = TaskTableViewCell.reuseIdentifire
     
     private lazy var allTasksTableView: UITableView = {
@@ -44,10 +51,40 @@ class AllTasksViewController: UIViewController {
     }
 
     //MARK: - Private Methods
+    //Сортировка
     @objc
     private func rightButtonAction() {
-        print("Сортировка")
+        let sortByCompletionAction = UIAction(title: "По выполненным") { [weak self] _ in
+            self?.currentSortingType = .byCompletion
+            self?.sortTasksAndUpdateView()
+        }
+        
+        let sortByDateAction = UIAction(title: "По дате") { [weak self] _ in
+            self?.currentSortingType = .byDate
+            self?.sortTasksAndUpdateView()
+        }
+        
+        let menu = UIMenu(title: "Сортировка", children: [sortByCompletionAction, sortByDateAction])
+        
+        let rightButton = UIBarButtonItem(title: "Сортировать",
+                                          image: UIImage(systemName: "line.horizontal.3.decrease"),
+                                          primaryAction: nil,
+                                          menu: menu)
+        
+        navigationItem.rightBarButtonItem = rightButton
+        setAndUpdateView(tasks: tasks)
     }
+    
+    private func sortTasksAndUpdateView() {
+        switch currentSortingType {
+        case .byCompletion:
+            tasks.sort { $0.completed && !$1.completed }
+        case .byDate:
+            tasks.sort { $0.time < $1.time }
+        }
+        allTasksTableView.reloadData()
+    }
+
     
     private func loadAndUpdateView() {
         if let loadedTasks = UserDefaults.standard.getTasks(forKey: "Tasks") {
