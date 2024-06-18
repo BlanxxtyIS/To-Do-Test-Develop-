@@ -23,9 +23,9 @@ class CreateTaskViewController: UIViewController {
     
     private lazy var taskName: UITextField = {
         let taskName = UITextField()
-        let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.systemGray]
+        let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.gBlue]
         taskName.attributedPlaceholder = NSAttributedString(string: "Название", attributes: attributes)
-        taskName.textColor = .black
+        taskName.textColor = .gRed
         
         taskName.layer.borderWidth = 1.0
         taskName.layer.borderColor = UIColor.systemGray.cgColor
@@ -52,17 +52,22 @@ class CreateTaskViewController: UIViewController {
     private lazy var selectImageButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Выбрать изображение", for: .normal)
+        button.setTitleColor(.gWhite, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .bold)
+        button.backgroundColor = .gBlue
         button.addTarget(self, action: #selector(selectImageFromGallery), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     private lazy var dateAndSelectedImageStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [datePicker, selectImageButton])
+        let leftSpacer = UIView()
+        let rightSpacer = UIView()
+        let stack = UIStackView(arrangedSubviews: [leftSpacer, datePicker, selectImageButton, rightSpacer])
         stack.axis = .horizontal
-        stack.distribution = .fill
-        stack.alignment = .trailing
-        stack.spacing = 40
+        stack.distribution = .equalSpacing
+        stack.alignment = .center
+        stack.spacing = 20
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -71,8 +76,8 @@ class CreateTaskViewController: UIViewController {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.borderWidth = 1
-        imageView.layer.borderColor = UIColor.systemGray.cgColor
-        imageView.layer.cornerRadius = 5 
+        imageView.layer.borderColor = UIColor.gBlue.cgColor
+        imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -80,11 +85,10 @@ class CreateTaskViewController: UIViewController {
     
     private lazy var descriptionText: UITextView = {
         let description = UITextView()
-        description.text = "Описание"
         description.textColor = .black
         description.isEditable = true
         description.layer.borderWidth = 1.0
-        description.layer.borderColor = UIColor.systemGray.cgColor
+        description.layer.borderColor = UIColor.gBlue.cgColor
         description.layer.cornerRadius = 5.0
         description.center = self.view.center
         description.font = .systemFont(ofSize: 20, weight: .medium)
@@ -94,7 +98,9 @@ class CreateTaskViewController: UIViewController {
     
     private lazy var createTaskButton: UIButton = {
        let button = UIButton()
-        button.backgroundColor = .blue
+        button.backgroundColor = .gBlue
+        button.setTitleColor(.gWhite, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
         button.setTitle("Сохранить", for: .normal)
         button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(createTaskButtonTapped), for: .touchUpInside)
@@ -219,7 +225,7 @@ class CreateTaskViewController: UIViewController {
     }
 }
 
-//MARK: - CreateTaskViewController
+//MARK: - UITextFieldDelegate
 extension CreateTaskViewController: UITextFieldDelegate {
     // Скрыть клавиатуру
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -238,15 +244,16 @@ extension CreateTaskViewController: UITextFieldDelegate {
     }
 }
 
-//MARK: - CreateTaskViewController
+//MARK: - UITextViewDelegate
 extension CreateTaskViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
-        if let textView = textView.text {
-            print(textView)
-        }
+        textView.resignFirstResponder()
+        return 
     }
+    
 }
 
+//MARK: - Images Workd
 extension CreateTaskViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {

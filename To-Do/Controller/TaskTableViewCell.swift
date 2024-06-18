@@ -29,7 +29,7 @@ class TaskTableViewCell: UITableViewCell {
     private lazy var taskNameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .medium)
-        label.textColor = .red
+        label.textColor = .gRed
         return label
     }()
     
@@ -97,10 +97,10 @@ class TaskTableViewCell: UITableViewCell {
             doneButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             doneButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            dateLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            
             taskNameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            taskNameLabel.leadingAnchor.constraint(equalTo: doneButton.trailingAnchor, constant: 5)])
+            taskNameLabel.leadingAnchor.constraint(equalTo: doneButton.trailingAnchor, constant: 5),
+        
+            dateLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)])
     }
 }
